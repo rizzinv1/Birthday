@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Ulang Tahun</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <section
+      id="countdownScreen"
+      class="countdown-screen"
+      aria-label="Hitung mundur ulang tahun"
+    >
+      <div class="countdown-glow"></div>
+      <div class="countdown-content">
+        <p class="countdown-eyebrow">Menuju hari spesial</p>
+        <h2>1 Desember 2026</h2>
+        <div class="countdown-grid" aria-live="polite">
+          <div class="countdown-item">
+            <strong id="countdownDays">00</strong>
+            <span>Hari</span>
+          </div>
+          <div class="countdown-item">
+            <strong id="countdownHours">00</strong>
+            <span>Jam</span>
+          </div>
+          <div class="countdown-item">
+            <strong id="countdownMinutes">00</strong>
+            <span>Menit</span>
+          </div>
+          <div class="countdown-item">
+            <strong id="countdownSeconds">00</strong>
+            <span>Detik</span>
+          </div>
+        </div>
+        <p class="countdown-note">Sebuah kejutan kecil sedang menunggu...</p>
+      </div>
+    </section>
+
+    <video
+      id="backgroundVideo"
+      class="background-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      aria-hidden="true"
+    ></video>
+    <div class="video-overlay" aria-hidden="true"></div>
+    <canvas id="confetti" aria-hidden="true"></canvas>
+
+    <main class="scene">
+      <section class="birthday-card" aria-label="Kartu ulang tahun">
+        <div class="topbar">
+          <span class="tiny-label">SPECIAL DAY</span>
+          <span id="dateLabel" class="date"></span>
+        </div>
+
+        <div class="photo-stage" id="photoStage">
+          <img
+            id="mainPhoto"
+            class="main-photo"
+            alt="Foto kenangan ulang tahun"
+          />
+          <div class="polaroid-shadow"></div>
+          <div class="photo-caption">
+            <span id="photoNumber">01</span>
+            <span id="photoCaption">Kenangan indah</span>
+          </div>
+        </div>
+
+        <div class="message">
+          <p class="eyebrow">HAPPY BIRTHDAY</p>
+          <h1 id="birthdayName">Sona Kalyana Purboprasetyani</h1>
+          <p id="birthdayMessage">
+            Semoga hari ini membawa senyuman, cinta, dan semua hal baik yang
+            pantas untukmu.
+          </p>
+        </div>
+
+        <div class="controls">
+          <button
+            id="prevButton"
+            class="round-button"
+            type="button"
+            aria-label="Foto sebelumnya"
+          >
+            &#8592;
+          </button>
+          <div id="dots" class="dots" aria-label="Pemilih foto"></div>
+          <button
+            id="nextButton"
+            class="round-button"
+            type="button"
+            aria-label="Foto berikutnya"
+          >
+            &#8594;
+          </button>
+        </div>
+      </section>
+
+      <div class="side-copy">
+        <p>Made with</p>
+        <span>&#9829;</span>
+      </div>
+    </main>
+
+    <div id="youtubePlayer" class="youtube-player" aria-hidden="true"></div>
+    <div
+      id="countdownYoutubePlayer"
+      class="youtube-player"
+      aria-hidden="true"
+    ></div>
+    <button
+      id="musicToggle"
+      class="music-toggle"
+      type="button"
+      aria-label="Putar musik"
+      title="Putar musik"
+    >
+      <span id="musicIcon">&#9835;</span>
+    </button>
+    <div id="nowPlaying" class="now-playing" role="status" aria-live="polite">
+      <div class="now-playing-icon">&#9835;</div>
+      <div class="now-playing-copy">
+        <span>SEKARANG DIPUTAR</span>
+        <strong id="nowPlayingTitle">Memuat audio...</strong>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
