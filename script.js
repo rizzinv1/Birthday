@@ -211,19 +211,52 @@ const dotsContainer = document.getElementById("dots");
 const prevButton = document.getElementById("prevButton");
 const nextButton = document.getElementById("nextButton");
 const backgroundVideo = document.getElementById("backgroundVideo");
+const backgroundVideoNext = document.getElementById("backgroundVideoNext");
 let backgroundVideoIndex = 0;
+let activeBackgroundVideo = backgroundVideo;
+let standbyBackgroundVideo = backgroundVideoNext;
+
+backgroundVideo.src = birthday.backgroundVideos[0];
+backgroundVideo.load();
+backgroundVideo.play().catch(() => {});
+backgroundVideo.classList.add("is-active");
+
+backgroundVideoNext.src = birthday.backgroundVideos[1];
+backgroundVideoNext.load();
 
 function setBackgroundVideo(index) {
   backgroundVideoIndex =
-    (index + birthday.backgroundVideos.length) % birthday.backgroundVideos.length;
-  backgroundVideo.classList.add("switching");
+    (index + birthday.backgroundVideos.length) %
+    birthday.backgroundVideos.length;
 
-  window.setTimeout(() => {
-    backgroundVideo.src = birthday.backgroundVideos[backgroundVideoIndex];
-    backgroundVideo.load();
-    backgroundVideo.play().catch(() => {});
-    backgroundVideo.classList.remove("switching");
-  }, 350);
+  standbyBackgroundVideo.src = birthday.backgroundVideos[backgroundVideoIndex];
+  standbyBackgroundVideo.load();
+
+  const startNextVideo = () => {
+    standbyBackgroundVideo.play()
+      .then(() => {
+        standbyBackgroundVideo.classList.add("is-active");
+
+        window.setTimeout(() => {
+          activeBackgroundVideo.classList.remove("is-active");
+          activeBackgroundVideo.pause();
+          activeBackgroundVideo.src = "";
+          activeBackgroundVideo.load();
+        }, 1200);
+
+        [activeBackgroundVideo, standbyBackgroundVideo] = [
+          standbyBackgroundVideo,
+          activeBackgroundVideo,
+        ];
+      })
+      .catch(() => {});
+  };
+
+  if (standbyBackgroundVideo.readyState >= 3) {
+    startNextVideo();
+  } else {
+    standbyBackgroundVideo.addEventListener("canplay", startNextVideo, { once: true });
+  }
 }
 
 setBackgroundVideo(0);
