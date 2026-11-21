@@ -205,6 +205,7 @@ body::after {
   overflow: hidden;
 }
 
+
 .birthday-card {
   width: min(1060px, calc(100vw - 220px));
   height: min(650px, calc(100dvh - 48px));
@@ -314,10 +315,10 @@ body::after {
 }
 
 .message h1 {
-  max-width: 420px;
+  max-width: 520px;
   margin: 0 0 24px;
   font-family: "Playfair Display", serif;
-  font-size: clamp(52px, 6vw, 88px);
+  font-size: clamp(44px, 5vw, 72px);
   font-weight: 800;
   line-height: 0.88;
   letter-spacing: -0.05em;

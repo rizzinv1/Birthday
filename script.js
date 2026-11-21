@@ -1,6 +1,6 @@
 // Ganti nama, pesan, tanggal, dan foto di bagian ini.
 const birthday = {
-  name: "Sona",
+  name: "Sona Kalyana Purboprasetyani",
   date: "21 . 11 . 2026",
   backgroundVideo: "855ZEgAeEQZ0Ts7l.mp4",
   message:
