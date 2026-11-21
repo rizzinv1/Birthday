@@ -2,7 +2,13 @@
 const birthday = {
   name: "Sona Kalyana Purboprasetyani",
   date: "21 . 11 . 2026",
-  backgroundVideo: "855ZEgAeEQZ0Ts7l.mp4",
+  backgroundVideos: [
+    "855ZEgAeEQZ0Ts7l.mp4",
+    "Yft68fwiJPiwtxRN.mp4",
+    "-_vqoCHljSLJtEL5.mp4",
+    "XIKDhNUVCu2iYo2q.mp4",
+    "1q6J38fmpvlGqo8e.mp4",
+  ],
   message:
     "Selamat ulang tahun! Semoga setiap langkahmu selalu dipenuhi kebahagiaan, cinta, dan mimpi yang menjadi kenyataan.",
   photos: [
@@ -205,9 +211,25 @@ const dotsContainer = document.getElementById("dots");
 const prevButton = document.getElementById("prevButton");
 const nextButton = document.getElementById("nextButton");
 const backgroundVideo = document.getElementById("backgroundVideo");
+let backgroundVideoIndex = 0;
 
-backgroundVideo.src = birthday.backgroundVideo;
-backgroundVideo.play().catch(() => {});
+function setBackgroundVideo(index) {
+  backgroundVideoIndex =
+    (index + birthday.backgroundVideos.length) % birthday.backgroundVideos.length;
+  backgroundVideo.classList.add("switching");
+
+  window.setTimeout(() => {
+    backgroundVideo.src = birthday.backgroundVideos[backgroundVideoIndex];
+    backgroundVideo.load();
+    backgroundVideo.play().catch(() => {});
+    backgroundVideo.classList.remove("switching");
+  }, 350);
+}
+
+setBackgroundVideo(0);
+window.setInterval(() => {
+  setBackgroundVideo(backgroundVideoIndex + 1);
+}, 12000);
 
 document.getElementById("birthdayName").textContent = birthday.name;
 document.getElementById("birthdayMessage").textContent = birthday.message;
