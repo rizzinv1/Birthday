@@ -233,23 +233,24 @@ function setBackgroundVideo(index) {
   standbyBackgroundVideo.load();
 
   const startNextVideo = () => {
-    standbyBackgroundVideo.play()
-      .then(() => {
-        standbyBackgroundVideo.classList.add("is-active");
+    standbyBackgroundVideo.play().then(() => {
+      standbyBackgroundVideo.classList.add("is-active");
 
-        window.setTimeout(() => {
-          activeBackgroundVideo.classList.remove("is-active");
-          activeBackgroundVideo.pause();
-          activeBackgroundVideo.src = "";
-          activeBackgroundVideo.load();
-        }, 1200);
+      const previousVideo = activeBackgroundVideo;
+      const newActiveVideo = standbyBackgroundVideo;
 
-        [activeBackgroundVideo, standbyBackgroundVideo] = [
-          standbyBackgroundVideo,
-          activeBackgroundVideo,
-        ];
-      })
-      .catch(() => {});
+      window.setTimeout(() => {
+        previousVideo.classList.remove("is-active");
+        previousVideo.pause();
+      }, 1200);
+
+      [activeBackgroundVideo, standbyBackgroundVideo] = [
+        newActiveVideo,
+        previousVideo,
+      ];
+    }).catch(() => {
+      activeBackgroundVideo.classList.add("is-active");
+    });
   };
 
   if (standbyBackgroundVideo.readyState >= 3) {
@@ -259,7 +260,6 @@ function setBackgroundVideo(index) {
   }
 }
 
-setBackgroundVideo(0);
 window.setInterval(() => {
   setBackgroundVideo(backgroundVideoIndex + 1);
 }, 12000);
