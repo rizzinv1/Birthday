@@ -152,6 +152,13 @@ document.head.appendChild(youtubeApi);
 
 const countdownScreen = document.getElementById("countdownScreen");
 const countdownTarget = new Date("2026-12-01T00:00:00");
+const landingPreview =
+  new URLSearchParams(window.location.search).get("preview") === "landing";
+
+if (landingPreview) {
+  countdownScreen.classList.add("hidden");
+}
+document.title = landingPreview ? "Happy Birthday Sona" : "Surprise";
 
 let countdownTimer = null;
 
@@ -164,6 +171,7 @@ function updateCountdown() {
     document.getElementById("countdownMinutes").textContent = "00";
     document.getElementById("countdownSeconds").textContent = "00";
     countdownScreen.classList.add("hidden");
+    document.title = "Happy Birthday Sona";
     if (
       countdownYoutubePlayer &&
       typeof countdownYoutubePlayer.pauseVideo === "function"
