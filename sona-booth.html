@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10122f">
   <title>Sona Booth — Photobooth Online</title>
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("is-embedded");
+    }
+  </script>
   <style>
     :root {
       color-scheme: dark;
@@ -16,6 +21,15 @@
       --muted: #b7b9d8;
       --pink: #ff83d2;
       --blue: #a9a7ff;
+    }
+
+    :root.is-embedded,
+    :root.is-embedded body {
+      background: transparent;
+    }
+
+    :root.is-embedded {
+      color-scheme: normal;
     }
 
     * { box-sizing: border-box; }
@@ -254,7 +268,7 @@
       clip-path: inset(50%);
     }
 
-    .camera-button, .camera-secondary, .camera-capture {
+    .camera-button, .camera-secondary, .camera-capture, .reset-button {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -268,7 +282,7 @@
       font-weight: 750;
     }
 
-    .camera-button {
+    .camera-button, .reset-button {
       width: 100%;
       min-height: 43px;
       margin-top: 9px;
@@ -277,7 +291,18 @@
 
     .camera-button:hover, .camera-secondary:hover { background: rgba(255,255,255,.1); }
 
+    .reset-button {
+      border-color: rgba(255, 131, 210, .35);
+      background: rgba(255, 131, 210, .07);
+      color: #ffd0ea;
+    }
+
+    .reset-button:not(:disabled):hover { background: rgba(255, 131, 210, .15); }
+
+    .reset-button:disabled { cursor: not-allowed; opacity: .5; }
+
     .camera-button:focus-visible, .camera-secondary:focus-visible, .camera-capture:focus-visible,
+    .reset-button:focus-visible,
     .camera-close:focus-visible, .camera-target:focus-visible {
       outline: 3px solid #ffb8e4;
       outline-offset: 3px;
@@ -492,6 +517,9 @@
         </div>
         <p class="upload-title">Tambahkan foto ke frame</p>
         <div class="slots" id="slots"></div>
+        <button class="reset-button" id="reset-photos" type="button" disabled>
+          <span aria-hidden="true">↺</span> Reset semua foto
+        </button>
         <button class="camera-button" id="open-camera" type="button">
           <span aria-hidden="true">▣</span> Ambil foto dengan kamera
         </button>
@@ -540,6 +568,7 @@
     const canvas = document.getElementById("preview");
     const context = canvas.getContext("2d");
     const slotsElement = document.getElementById("slots");
+    const resetPhotosButton = document.getElementById("reset-photos");
     const saveButton = document.getElementById("save");
     const saveLabel = document.getElementById("save-label");
     const hint = document.getElementById("hint");
@@ -808,6 +837,7 @@
       });
 
       const hasPhoto = photos.some(Boolean);
+      resetPhotosButton.disabled = !hasPhoto;
       const version = ++exportVersion;
       if (exportUrl) {
         URL.revokeObjectURL(exportUrl);
@@ -876,6 +906,18 @@
     }
 
     slotLabels.forEach((_, index) => addSlot(index));
+
+    resetPhotosButton.addEventListener("click", () => {
+      photos.fill(null);
+      slotsElement.querySelectorAll(".slot-button").forEach((button, index) => {
+        button.classList.remove("has-photo");
+        button.querySelector(".slot-icon").textContent = "＋";
+        button.querySelector(".slot-label").textContent = slotLabels[index];
+        button.setAttribute("aria-label", `Tambah ${slotLabels[index]}`);
+      });
+      render();
+      setHint("Semua foto telah direset.", false);
+    });
 
     document.getElementById("open-camera").addEventListener("click", () => {
       const firstEmptySlot = photos.findIndex(photo => !photo);
