@@ -39,6 +39,26 @@
       </div>
     </section>
 
+    <nav class="view-switcher" aria-label="Pilih halaman">
+      <button
+        id="birthdayViewButton"
+        class="view-switch-button active"
+        type="button"
+        aria-pressed="true"
+      >
+        Ulang Tahun
+      </button>
+      <button
+        id="boothViewButton"
+        class="view-switch-button"
+        type="button"
+        aria-pressed="false"
+        hidden
+      >
+        Sona Booth
+      </button>
+    </nav>
+
     <video
       id="backgroundVideo"
       class="background-video"
@@ -117,6 +137,15 @@
       </div>
     </main>
 
+    <section id="boothView" class="booth-view" aria-label="Sona Booth" hidden>
+      <iframe
+        class="booth-frame"
+        src="sona-booth.html?v=2"
+        title="Sona Booth photobooth"
+        allow="camera"
+      ></iframe>
+    </section>
+
     <div id="youtubePlayer" class="youtube-player" aria-hidden="true"></div>
     <div
       id="countdownYoutubePlayer"
@@ -140,6 +169,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>

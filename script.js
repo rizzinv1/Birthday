@@ -154,11 +154,48 @@ const countdownScreen = document.getElementById("countdownScreen");
 const countdownTarget = new Date("2026-12-01T00:00:00");
 const landingPreview =
   new URLSearchParams(window.location.search).get("preview") === "landing";
+const birthdayScene = document.querySelector(".scene");
+const boothView = document.getElementById("boothView");
+const birthdayViewButton = document.getElementById("birthdayViewButton");
+const boothViewButton = document.getElementById("boothViewButton");
+let activePage = "birthday";
+
+function updateBoothButtonVisibility() {
+  boothViewButton.hidden =
+    activePage === "birthday" &&
+    !landingPreview &&
+    countdownTarget.getTime() > Date.now();
+}
 
 if (landingPreview) {
   countdownScreen.classList.add("hidden");
 }
+updateBoothButtonVisibility();
 document.title = landingPreview ? "Happy Birthday Sona" : "Surprise";
+
+function showPage(page) {
+  const isBooth = page === "booth";
+  activePage = page;
+  updateBoothButtonVisibility();
+  boothView.hidden = !isBooth;
+  birthdayScene.hidden = isBooth;
+  countdownScreen.classList.toggle(
+    "hidden",
+    isBooth || landingPreview || countdownTarget.getTime() <= Date.now(),
+  );
+  birthdayViewButton.classList.toggle("active", !isBooth);
+  birthdayViewButton.setAttribute("aria-pressed", String(!isBooth));
+  boothViewButton.classList.toggle("active", isBooth);
+  boothViewButton.setAttribute("aria-pressed", String(isBooth));
+  document.title = isBooth
+    ? "Sona Booth"
+    : countdownTarget.getTime() > Date.now() && !landingPreview
+      ? "Surprise"
+      : "Happy Birthday Sona";
+}
+
+birthdayViewButton.addEventListener("click", () => showPage("birthday"));
+boothViewButton.addEventListener("click", () => showPage("booth"));
 
 let countdownTimer = null;
 
@@ -171,7 +208,8 @@ function updateCountdown() {
     document.getElementById("countdownMinutes").textContent = "00";
     document.getElementById("countdownSeconds").textContent = "00";
     countdownScreen.classList.add("hidden");
-    document.title = "Happy Birthday Sona";
+    updateBoothButtonVisibility();
+    document.title = activePage === "booth" ? "Sona Booth" : "Happy Birthday Sona";
     if (
       countdownYoutubePlayer &&
       typeof countdownYoutubePlayer.pauseVideo === "function"

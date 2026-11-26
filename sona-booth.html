@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10122f">
+  <title>Sona Booth — Photobooth Online</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #10122f;
+      color: #fff;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --muted: #b7b9d8;
+      --pink: #ff83d2;
+      --blue: #a9a7ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 15% 10%, rgba(103, 95, 220, .27), transparent 34rem),
+        radial-gradient(ellipse at 90% 80%, rgba(242, 101, 193, .13), transparent 30rem),
+        #10122f;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 54px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 48px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 750;
+      letter-spacing: .03em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a795ff, #f38bcc);
+      box-shadow: 0 5px 24px rgba(184, 132, 255, .3);
+      font-size: 18px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(360px, 1fr);
+      align-items: center;
+      gap: clamp(36px, 7vw, 88px);
+    }
+
+    .intro { padding: 10px 0; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      color: #e4bbff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 22px;
+      height: 1px;
+      background: var(--pink);
+      content: "";
+    }
+
+    h1 {
+      max-width: 500px;
+      margin: 0;
+      font-size: clamp(42px, 6vw, 70px);
+      line-height: .99;
+      letter-spacing: -.055em;
+    }
+
+    h1 span {
+      display: block;
+      color: #d6a5ff;
+    }
+
+    .description {
+      max-width: 420px;
+      margin: 22px 0 28px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .steps {
+      display: grid;
+      gap: 13px;
+      margin: 0;
+      padding: 0;
+      color: #e6e5fa;
+      list-style: none;
+    }
+
+    .steps li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .step-number {
+      display: grid;
+      flex: 0 0 27px;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+      border: 1px solid rgba(196, 177, 255, .4);
+      border-radius: 50%;
+      color: #e5b7ff;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .booth {
+      width: min(100%, 490px);
+      justify-self: center;
+      padding: 18px;
+      border: 1px solid rgba(205, 198, 255, .19);
+      border-radius: 25px;
+      background: rgba(26, 27, 62, .8);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .32), inset 0 1px rgba(255,255,255,.06);
+      backdrop-filter: blur(14px);
+    }
+
+    .preview-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 1px 2px 14px;
+    }
+
+    .preview-heading strong { font-size: 14px; }
+
+    .quality-pill {
+      padding: 6px 9px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 999px;
+      color: #cac9e4;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .canvas-wrap {
+      overflow: hidden;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 14px;
+      background: #20234f;
+      line-height: 0;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .upload-title {
+      margin: 18px 2px 10px;
+      color: #e7e6fb;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .slots {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .slot-button {
+      min-height: 62px;
+      padding: 8px 4px;
+      border: 1px solid rgba(187, 176, 255, .25);
+      border-radius: 12px;
+      background: rgba(255,255,255,.045);
+      color: #e7e5fc;
+      cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, transform .16s ease;
+    }
+
+    .slot-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 131, 210, .75);
+      background: rgba(255, 131, 210, .1);
+    }
+
+    .slot-button:focus-visible, .save-button:focus-visible {
+      outline: 3px solid #ffb8e4;
+      outline-offset: 3px;
+    }
+
+    .slot-icon {
+      display: block;
+      margin-bottom: 5px;
+      color: #e8a9ff;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .slot-label {
+      display: block;
+      overflow: hidden;
+      font-size: 10px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .slot-button.has-photo {
+      border-color: rgba(134, 233, 202, .5);
+      color: #b6f0dc;
+    }
+
+    .slot-button.has-photo .slot-icon { color: #8de2c2; }
+
+    .file-input {
+      position: absolute;
+      overflow: hidden;
+      width: 1px;
+      height: 1px;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    .camera-button, .camera-secondary, .camera-capture {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(187, 176, 255, .3);
+      border-radius: 12px;
+      background: rgba(255,255,255,.045);
+      color: #f0e9ff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 750;
+    }
+
+    .camera-button {
+      width: 100%;
+      min-height: 43px;
+      margin-top: 9px;
+      font-size: 12px;
+    }
+
+    .camera-button:hover, .camera-secondary:hover { background: rgba(255,255,255,.1); }
+
+    .camera-button:focus-visible, .camera-secondary:focus-visible, .camera-capture:focus-visible,
+    .camera-close:focus-visible, .camera-target:focus-visible {
+      outline: 3px solid #ffb8e4;
+      outline-offset: 3px;
+    }
+
+    .camera-dialog {
+      width: min(460px, calc(100% - 28px));
+      max-width: none;
+      max-height: calc(100% - 28px);
+      padding: 0;
+      overflow: auto;
+      border: 1px solid rgba(205, 198, 255, .24);
+      border-radius: 20px;
+      background: #1a1b3e;
+      color: #fff;
+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
+    }
+
+    .camera-dialog::backdrop { background: rgba(7, 8, 25, .78); }
+
+    .camera-content { padding: 18px; }
+
+    .camera-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .camera-header strong { font-size: 15px; }
+
+    .camera-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 10px;
+      background: rgba(255,255,255,.06);
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .camera-label {
+      display: block;
+      margin: 0 0 7px;
+      color: #deddf5;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .camera-target {
+      width: 100%;
+      min-height: 40px;
+      margin-bottom: 12px;
+      padding: 0 10px;
+      border: 1px solid rgba(187, 176, 255, .3);
+      border-radius: 10px;
+      background: #25264e;
+      color: #fff;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .camera-video {
+      display: block;
+      width: 100%;
+      max-height: 55vh;
+      aspect-ratio: 4 / 3;
+      border-radius: 13px;
+      background: #090a1c;
+      object-fit: cover;
+    }
+
+    .captured-preview {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .captured-preview img {
+      display: block;
+      width: 88px;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .captured-preview p {
+      margin: 0;
+      color: #e8defa;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .camera-message {
+      min-height: 18px;
+      margin: 10px 0;
+      color: #c5c3e1;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .camera-message.error { color: #ffadbd; }
+
+    .camera-actions { display: grid; grid-template-columns: 1fr 1.3fr; gap: 9px; }
+
+    .camera-secondary, .camera-capture { min-height: 44px; font-size: 12px; }
+
+    #switch-camera { grid-column: 1 / -1; }
+
+    [hidden] { display: none !important; }
+
+    .camera-capture {
+      border: 0;
+      background: linear-gradient(100deg, #cb8aff, #fa85cb);
+      color: #241138;
+    }
+
+    .camera-secondary:disabled, .camera-capture:disabled { cursor: not-allowed; opacity: .5; }
+
+    .save-button {
+      display: flex;
+      width: 100%;
+      min-height: 49px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 13px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(100deg, #cb8aff, #fa85cb);
+      color: #241138;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 850;
+      box-shadow: 0 8px 25px rgba(214, 113, 211, .2);
+      transition: filter .16s ease, transform .16s ease;
+    }
+
+    .save-button:not(:disabled):hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .save-button:disabled {
+      cursor: not-allowed;
+      filter: saturate(.35);
+      opacity: .58;
+    }
+
+    .hint {
+      min-height: 16px;
+      margin: 10px 2px 0;
+      color: #b7b6d2;
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .hint.error { color: #ffadbd; }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 32px, 540px); padding-top: 18px; }
+      .topbar { margin-bottom: 28px; }
+      .layout { grid-template-columns: 1fr; gap: 26px; }
+      .intro { padding: 0; }
+      h1 { font-size: clamp(39px, 11vw, 58px); }
+      .description { margin: 14px 0 18px; font-size: 14px; }
+      .steps { grid-template-columns: 1fr; gap: 9px; }
+      .booth { width: min(100%, 450px); padding: 14px; }
+    }
+
+    @media (max-width: 380px) {
+      .slots { gap: 5px; }
+      .slot-button { min-height: 58px; }
+      .slot-label { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>SONA BOOTH</span>
+    </header>
+
+    <div class="layout">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Photobooth online</p>
+        <h1 id="page-title">Momen kecil,<span>jadi bintang.</span></h1>
+        <p class="description">Masukkan foto favoritmu ke dalam frame Rising Star, lalu simpan hasilnya dalam satu gambar.</p>
+        <ol class="steps">
+          <li><span class="step-number">1</span>Pilih foto untuk setiap kotak</li>
+          <li><span class="step-number">2</span>Pratinjau hasilnya langsung</li>
+          <li><span class="step-number">3</span>Unduh atau simpan ke perangkat</li>
+        </ol>
+      </section>
+
+      <section class="booth" aria-label="Editor photobooth">
+        <div class="preview-heading">
+          <strong>Pratinjau photobooth</strong>
+          <span class="quality-pill">KUALITAS TINGGI</span>
+        </div>
+        <div class="canvas-wrap">
+          <canvas id="preview" aria-label="Pratinjau frame dengan foto pilihan"></canvas>
+        </div>
+        <p class="upload-title">Tambahkan foto ke frame</p>
+        <div class="slots" id="slots"></div>
+        <button class="camera-button" id="open-camera" type="button">
+          <span aria-hidden="true">▣</span> Ambil foto dengan kamera
+        </button>
+        <button class="save-button" id="save" type="button" disabled>
+          <span aria-hidden="true">↓</span>
+          <span id="save-label">Pilih foto untuk mulai</span>
+        </button>
+        <p class="hint" id="hint" role="status">Foto diproses di perangkatmu. Tidak ada yang diunggah.</p>
+      </section>
+    </div>
+  </main>
+
+  <dialog class="camera-dialog" id="camera-dialog" aria-labelledby="camera-title">
+    <div class="camera-content">
+      <div class="camera-header">
+        <strong id="camera-title">Ambil foto</strong>
+        <button class="camera-close" id="close-camera" type="button" aria-label="Tutup kamera">×</button>
+      </div>
+      <label class="camera-label" for="camera-target">Simpan foto ke</label>
+      <select class="camera-target" id="camera-target">
+        <option value="0">Foto 1</option>
+        <option value="1">Foto 2</option>
+        <option value="2">Foto 3</option>
+        <option value="3">Foto 4</option>
+      </select>
+      <label class="camera-label" for="camera-device">Perangkat kamera</label>
+      <select class="camera-target" id="camera-device" aria-label="Pilih perangkat kamera"></select>
+      <video class="camera-video" id="camera-video" autoplay playsinline muted></video>
+      <div class="captured-preview" id="captured-preview" hidden>
+        <img id="captured-photo-preview" alt="Pratinjau foto yang baru diambil">
+        <p id="captured-preview-label"></p>
+      </div>
+      <p class="camera-message" id="camera-message" role="status">Izinkan akses kamera untuk memulai. Jika pratinjau hitam, periksa izin kamera Windows dan browser.</p>
+      <div class="camera-actions">
+        <button class="camera-secondary" id="switch-camera" type="button">Ganti kamera</button>
+        <button class="camera-capture" id="capture-photo" type="button" disabled>Ambil foto</button>
+        <button class="camera-secondary" id="accept-photo" type="button" hidden>Gunakan foto</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const frame = new Image();
+    frame.src = "./star-booth.png";
+
+    const canvas = document.getElementById("preview");
+    const context = canvas.getContext("2d");
+    const slotsElement = document.getElementById("slots");
+    const saveButton = document.getElementById("save");
+    const saveLabel = document.getElementById("save-label");
+    const hint = document.getElementById("hint");
+    const cameraDialog = document.getElementById("camera-dialog");
+    const cameraVideo = document.getElementById("camera-video");
+    const capturedPreview = document.getElementById("captured-preview");
+    const capturedPhotoPreview = document.getElementById("captured-photo-preview");
+    const capturedPreviewLabel = document.getElementById("captured-preview-label");
+    const cameraMessage = document.getElementById("camera-message");
+    const cameraTarget = document.getElementById("camera-target");
+    const cameraDevice = document.getElementById("camera-device");
+    const captureButton = document.getElementById("capture-photo");
+    const switchCameraButton = document.getElementById("switch-camera");
+    const acceptPhotoButton = document.getElementById("accept-photo");
+    const photos = [null, null, null, null];
+    let exportVersion = 0;
+    let exportUrl = null;
+    const slotLabels = ["Foto 1", "Foto 2", "Foto 3", "Foto 4"];
+    let cameraStream = null;
+    let facingMode = "user";
+    let lastCameraTarget = null;
+    let capturedPreviewUrl = null;
+    let cameraDevices = [];
+    let selectedCameraId = "";
+    const slotAreas = [
+      { x: 99, y: 310, width: 253, height: 340, radius: 25 },
+      { x: 528, y: 310, width: 244, height: 340, radius: 25 },
+      { x: 99, y: 786, width: 253, height: 343, radius: 25 },
+      { x: 528, y: 786, width: 244, height: 321, radius: 25 }
+    ];
+
+    function setHint(message, isError) {
+      hint.textContent = message;
+      hint.classList.toggle("error", Boolean(isError));
+    }
+
+    function setCameraMessage(message, isError) {
+      cameraMessage.textContent = message;
+      cameraMessage.classList.toggle("error", Boolean(isError));
+    }
+
+    function updatePhotoSlot(index) {
+      const button = slotsElement.querySelectorAll(".slot-button")[index];
+      button.classList.add("has-photo");
+      button.querySelector(".slot-icon").textContent = "✓";
+      button.querySelector(".slot-label").textContent = slotLabels[index] + " siap";
+      button.setAttribute("aria-label", `Ganti ${slotLabels[index]}`);
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      cameraVideo.srcObject = null;
+      captureButton.disabled = true;
+      switchCameraButton.disabled = false;
+    }
+
+    async function updateCameraDevices(activeDeviceId) {
+      try {
+        cameraDevices = (await navigator.mediaDevices.enumerateDevices())
+          .filter(device => device.kind === "videoinput");
+        cameraDevice.replaceChildren();
+
+        cameraDevices.forEach((device, index) => {
+          const option = document.createElement("option");
+          option.value = device.deviceId;
+          option.textContent = device.label || `Kamera ${index + 1}`;
+          cameraDevice.append(option);
+        });
+
+        if (!cameraDevices.length) {
+          cameraDevice.hidden = true;
+          selectedCameraId = "";
+          return true;
+        }
+
+        cameraDevice.hidden = false;
+        const preferredDeviceId = cameraDevices.some(device => device.deviceId === activeDeviceId)
+          ? activeDeviceId
+          : selectedCameraId;
+        const preferredDeviceAvailable = cameraDevices.some(device => device.deviceId === preferredDeviceId);
+        cameraDevice.value = preferredDeviceAvailable ? preferredDeviceId : cameraDevices[0].deviceId;
+        selectedCameraId = cameraDevice.value;
+        return true;
+      } catch (error) {
+        cameraDevices = [];
+        cameraDevice.replaceChildren();
+        cameraDevice.hidden = true;
+        selectedCameraId = "";
+        return false;
+      }
+    }
+
+    async function waitForVideoPlayback() {
+      let timeoutId;
+      try {
+        const playback = cameraVideo.play();
+        await Promise.race([
+          playback,
+          new Promise((resolve, reject) => {
+            timeoutId = window.setTimeout(() => {
+              const error = new Error("Kamera tidak mengirimkan video.");
+              error.name = "CameraPreviewError";
+              reject(error);
+            }, 8000);
+          })
+        ]);
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+
+      if (!cameraVideo.videoWidth || !cameraVideo.videoHeight) {
+        const error = new Error("Pratinjau kamera tidak memiliki ukuran video.");
+        error.name = "CameraPreviewError";
+        throw error;
+      }
+    }
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setCameraMessage("Kamera perlu browser modern dan situs HTTPS (atau localhost). Buka situs melalui koneksi aman.", true);
+        return;
+      }
+
+      stopCamera();
+      captureButton.disabled = true;
+      switchCameraButton.disabled = true;
+      setCameraMessage("Meminta izin kamera...", false);
+
+      try {
+        const videoConstraints = selectedCameraId
+          ? { deviceId: { exact: selectedCameraId } }
+          : { facingMode: { ideal: facingMode } };
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: videoConstraints,
+          audio: false
+        });
+        if (!cameraDialog.open) {
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+        cameraStream = stream;
+        const videoTrack = stream.getVideoTracks()[0];
+        const settings = videoTrack && videoTrack.getSettings ? videoTrack.getSettings() : {};
+        const deviceListLoaded = await updateCameraDevices(settings.deviceId || "");
+        cameraVideo.srcObject = stream;
+        await waitForVideoPlayback();
+        captureButton.disabled = false;
+        const message = deviceListLoaded
+          ? "Kamera aktif. Jika pratinjau hitam, pilih kamera lain atau izinkan akses kamera di Windows dan browser."
+          : "Kamera aktif, tetapi daftar perangkat tidak dapat dimuat. Periksa izin kamera Windows dan browser jika pratinjau hitam.";
+        setCameraMessage(message, false);
+      } catch (error) {
+        const message = error.name === "NotAllowedError" || error.name === "PermissionDeniedError"
+          ? "Izin kamera ditolak. Izinkan kamera di pengaturan browser lalu coba lagi."
+          : error.name === "NotFoundError"
+            ? "Kamera tidak ditemukan di perangkat ini."
+            : error.name === "NotReadableError"
+              ? "Kamera sedang digunakan aplikasi lain atau diblokir Windows. Tutup aplikasi kamera lain lalu coba lagi."
+              : error.name === "CameraPreviewError"
+                ? (cameraDevices.length > 1
+                  ? "Kamera terhubung tetapi tidak mengirim gambar. Pilih perangkat kamera lain, periksa penutup kamera, dan izin Windows/browser."
+                  : "Kamera terhubung tetapi tidak mengirim gambar. Periksa penutup kamera, izin Windows/browser, atau aplikasi lain yang memakai kamera.")
+            : "Kamera tidak dapat dibuka. Pastikan situs memakai HTTPS dan coba lagi.";
+        stopCamera();
+        setCameraMessage(message, true);
+      } finally {
+        switchCameraButton.disabled = false;
+      }
+    }
+
+    async function capturePhoto() {
+      if (!cameraStream || !cameraVideo.videoWidth) return;
+      captureButton.disabled = true;
+      setCameraMessage("Menyiapkan foto...", false);
+
+      try {
+        const captureCanvas = document.createElement("canvas");
+        captureCanvas.width = cameraVideo.videoWidth;
+        captureCanvas.height = cameraVideo.videoHeight;
+        captureCanvas.getContext("2d").drawImage(cameraVideo, 0, 0);
+        const blob = await new Promise((resolve, reject) => {
+          captureCanvas.toBlob(result => result ? resolve(result) : reject(new Error("Gagal mengambil foto.")), "image/jpeg", .92);
+        });
+        const photo = new Image();
+        const photoUrl = URL.createObjectURL(blob);
+        photo.onload = () => {
+          const index = Number(cameraTarget.value);
+          photos[index] = photo;
+          updatePhotoSlot(index);
+          render();
+          URL.revokeObjectURL(photoUrl);
+          if (capturedPreviewUrl) URL.revokeObjectURL(capturedPreviewUrl);
+          capturedPreviewUrl = URL.createObjectURL(blob);
+          capturedPhotoPreview.src = capturedPreviewUrl;
+          capturedPreviewLabel.textContent = `Pratinjau ${slotLabels[index]} tersimpan`;
+          capturedPreview.hidden = false;
+          setHint("Foto diproses di perangkatmu. Tidak ada yang diunggah.", false);
+          captureButton.disabled = false;
+          const firstEmptySlot = photos.findIndex(item => !item);
+          acceptPhotoButton.hidden = firstEmptySlot !== -1;
+          const nextIndex = firstEmptySlot === -1 ? (index + 1) % photos.length : firstEmptySlot;
+          lastCameraTarget = nextIndex;
+          cameraTarget.value = String(nextIndex);
+          captureButton.textContent = photos[nextIndex] ? "Ambil ulang" : "Ambil foto";
+          const nextMessage = firstEmptySlot === -1
+            ? `${slotLabels[index]} tersimpan. Semua kotak sudah terisi; pilih kotak untuk mengambil ulang.`
+            : `${slotLabels[index]} tersimpan. Kamera tetap terbuka; selanjutnya ${slotLabels[nextIndex]} dipilih otomatis.`;
+          setCameraMessage(nextMessage, false);
+        };
+        photo.onerror = () => {
+          URL.revokeObjectURL(photoUrl);
+          setCameraMessage("Foto tidak dapat diproses. Coba ambil ulang.", true);
+          captureButton.disabled = false;
+        };
+        photo.src = photoUrl;
+      } catch (error) {
+        setCameraMessage("Gagal mengambil foto. Periksa kamera lalu coba lagi.", true);
+        captureButton.disabled = false;
+      }
+    }
+
+    function roundedRectPath(x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, height / 2);
+      context.beginPath();
+      context.moveTo(x + r, y);
+      context.lineTo(x + width - r, y);
+      context.quadraticCurveTo(x + width, y, x + width, y + r);
+      context.lineTo(x + width, y + height - r);
+      context.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+      context.lineTo(x + r, y + height);
+      context.quadraticCurveTo(x, y + height, x, y + height - r);
+      context.lineTo(x, y + r);
+      context.quadraticCurveTo(x, y, x + r, y);
+      context.closePath();
+    }
+
+    function drawPhoto(photo, area) {
+      context.save();
+      roundedRectPath(area.x, area.y, area.width, area.height, area.radius);
+      context.clip();
+
+      const scale = Math.max(area.width / photo.width, area.height / photo.height);
+      const width = photo.width * scale;
+      const height = photo.height * scale;
+      context.drawImage(
+        photo,
+        area.x + (area.width - width) / 2,
+        area.y + (area.height - height) / 2,
+        width,
+        height
+      );
+      context.restore();
+    }
+
+    function render() {
+      if (!frame.complete || !frame.naturalWidth) return;
+      canvas.width = frame.naturalWidth;
+      canvas.height = frame.naturalHeight;
+
+      context.drawImage(frame, 0, 0);
+      photos.forEach((photo, index) => {
+        if (photo) drawPhoto(photo, slotAreas[index]);
+      });
+
+      const hasPhoto = photos.some(Boolean);
+      const version = ++exportVersion;
+      if (exportUrl) {
+        URL.revokeObjectURL(exportUrl);
+        exportUrl = null;
+      }
+
+      saveButton.disabled = true;
+      saveLabel.textContent = hasPhoto ? "Menyiapkan gambar..." : "Pilih foto untuk mulai";
+      if (!hasPhoto) return;
+
+      setHint("Menyiapkan gambar...", false);
+      canvas.toBlob((blob) => {
+        if (version !== exportVersion) return;
+        if (!blob) {
+          setHint("Gagal menyiapkan gambar. Coba pilih foto lagi.", true);
+          saveLabel.textContent = "Gagal menyiapkan gambar";
+          return;
+        }
+
+        exportUrl = URL.createObjectURL(blob);
+        saveButton.disabled = false;
+        saveLabel.textContent = "Simpan hasil photobooth";
+        setHint("Foto diproses di perangkatmu. Tidak ada yang diunggah.", false);
+      }, "image/png");
+    }
+
+    function addSlot(index) {
+      const input = document.createElement("input");
+      input.className = "file-input";
+      input.type = "file";
+      input.accept = "image/*";
+      input.setAttribute("aria-label", `Pilih ${slotLabels[index]}`);
+
+      const button = document.createElement("button");
+      button.className = "slot-button";
+      button.type = "button";
+      button.innerHTML = `<span class="slot-icon" aria-hidden="true">＋</span><span class="slot-label">${slotLabels[index]}</span>`;
+      button.setAttribute("aria-label", `Tambah ${slotLabels[index]}`);
+      button.addEventListener("click", () => input.click());
+      input.addEventListener("change", () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+          setHint("Pilih file gambar seperti JPG, PNG, atau HEIC.", true);
+          input.value = "";
+          return;
+        }
+
+        const photo = new Image();
+        photo.onload = () => {
+          photos[index] = photo;
+          updatePhotoSlot(index);
+          setHint("Foto diproses di perangkatmu. Tidak ada yang diunggah.", false);
+          render();
+          URL.revokeObjectURL(photo.src);
+        };
+        photo.onerror = () => {
+          setHint("Foto tidak dapat dibuka. Coba pilih gambar lain.", true);
+          URL.revokeObjectURL(photo.src);
+        };
+        photo.src = URL.createObjectURL(file);
+        input.value = "";
+      });
+
+      slotsElement.append(input, button);
+    }
+
+    slotLabels.forEach((_, index) => addSlot(index));
+
+    document.getElementById("open-camera").addEventListener("click", () => {
+      const firstEmptySlot = photos.findIndex(photo => !photo);
+      const target = lastCameraTarget === null
+        ? (firstEmptySlot === -1 ? 0 : firstEmptySlot)
+        : lastCameraTarget;
+      cameraTarget.value = String(target);
+      captureButton.textContent = "Ambil foto";
+      acceptPhotoButton.hidden = true;
+      cameraDialog.showModal();
+      startCamera();
+    });
+    document.getElementById("close-camera").addEventListener("click", () => cameraDialog.close());
+    acceptPhotoButton.addEventListener("click", () => cameraDialog.close());
+    cameraDialog.addEventListener("close", () => {
+      stopCamera();
+      capturedPreview.hidden = true;
+      capturedPhotoPreview.removeAttribute("src");
+      if (capturedPreviewUrl) {
+        URL.revokeObjectURL(capturedPreviewUrl);
+        capturedPreviewUrl = null;
+      }
+    });
+    cameraTarget.addEventListener("change", () => {
+      const index = Number(cameraTarget.value);
+      lastCameraTarget = index;
+      captureButton.textContent = photos[index] ? "Ambil ulang" : "Ambil foto";
+    });
+    cameraDevice.addEventListener("change", () => {
+      selectedCameraId = cameraDevice.value;
+      startCamera();
+    });
+    switchCameraButton.addEventListener("click", () => {
+      if (cameraDevices.length > 1) {
+        const currentIndex = cameraDevices.findIndex(device => device.deviceId === selectedCameraId);
+        const nextDevice = cameraDevices[(currentIndex + 1 + cameraDevices.length) % cameraDevices.length];
+        selectedCameraId = nextDevice.deviceId;
+        cameraDevice.value = selectedCameraId;
+      } else {
+        selectedCameraId = "";
+        facingMode = facingMode === "user" ? "environment" : "user";
+      }
+      startCamera();
+    });
+    captureButton.addEventListener("click", capturePhoto);
+
+    frame.onload = () => {
+      render();
+      setHint("Foto diproses di perangkatmu. Tidak ada yang diunggah.", false);
+    };
+    frame.onerror = () => setHint("Frame tidak dapat dimuat. Muat ulang halaman untuk mencoba lagi.", true);
+
+    saveButton.addEventListener("click", () => {
+      if (!exportUrl || !photos.some(Boolean)) return;
+
+      const link = document.createElement("a");
+      link.href = exportUrl;
+      link.download = "sona-booth.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setHint("Unduhan dimulai. Cek folder Unduhan browser.", false);
+    });
+  </script>
+</body>
+</html>
