@@ -28,9 +28,9 @@ const birthday = {
       caption: "Offair Lapangan Banteng",
     },
     {
-      src: "HQYy59JaYAArAH-.jpg",
+      src: "sona.jpg",
       alt: "Kenangan Sona 4",
-      caption: "Instagram Story",
+      caption: "Offair Cikarang",
     },
   ],
 };
@@ -209,7 +209,8 @@ function updateCountdown() {
     document.getElementById("countdownSeconds").textContent = "00";
     countdownScreen.classList.add("hidden");
     updateBoothButtonVisibility();
-    document.title = activePage === "booth" ? "Sona Booth" : "Happy Birthday Sona";
+    document.title =
+      activePage === "booth" ? "Sona Booth" : "Happy Birthday Sona";
     if (
       countdownYoutubePlayer &&
       typeof countdownYoutubePlayer.pauseVideo === "function"
@@ -279,30 +280,35 @@ function setBackgroundVideo(index) {
   standbyBackgroundVideo.load();
 
   const startNextVideo = () => {
-    standbyBackgroundVideo.play().then(() => {
-      standbyBackgroundVideo.classList.add("is-active");
+    standbyBackgroundVideo
+      .play()
+      .then(() => {
+        standbyBackgroundVideo.classList.add("is-active");
 
-      const previousVideo = activeBackgroundVideo;
-      const newActiveVideo = standbyBackgroundVideo;
+        const previousVideo = activeBackgroundVideo;
+        const newActiveVideo = standbyBackgroundVideo;
 
-      window.setTimeout(() => {
-        previousVideo.classList.remove("is-active");
-        previousVideo.pause();
-      }, 1200);
+        window.setTimeout(() => {
+          previousVideo.classList.remove("is-active");
+          previousVideo.pause();
+        }, 1200);
 
-      [activeBackgroundVideo, standbyBackgroundVideo] = [
-        newActiveVideo,
-        previousVideo,
-      ];
-    }).catch(() => {
-      activeBackgroundVideo.classList.add("is-active");
-    });
+        [activeBackgroundVideo, standbyBackgroundVideo] = [
+          newActiveVideo,
+          previousVideo,
+        ];
+      })
+      .catch(() => {
+        activeBackgroundVideo.classList.add("is-active");
+      });
   };
 
   if (standbyBackgroundVideo.readyState >= 3) {
     startNextVideo();
   } else {
-    standbyBackgroundVideo.addEventListener("canplay", startNextVideo, { once: true });
+    standbyBackgroundVideo.addEventListener("canplay", startNextVideo, {
+      once: true,
+    });
   }
 }
 
