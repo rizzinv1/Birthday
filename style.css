@@ -652,18 +652,31 @@ body::after {
 
 @media (max-width: 520px) {
   .scene {
-    padding: 10px;
+    height: 100dvh;
+    place-items: start center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: calc(env(safe-area-inset-top, 0px) + 76px) 10px
+      calc(env(safe-area-inset-bottom, 0px) + 84px);
   }
   .birthday-card {
     width: calc(100vw - 20px);
+    height: auto;
     padding: 14px 16px 20px;
   }
   .photo-stage {
     height: 340px;
+    margin-bottom: 30px;
+  }
+  .main-photo {
+    object-fit: contain;
+    background: rgba(20, 18, 40, 0.36);
   }
   .photo-caption {
-    right: -6px;
-    bottom: 14px;
+    right: 0;
+    bottom: -14px;
+    min-width: 0;
+    max-width: calc(100% - 24px);
   }
   .message h1 {
     font-size: 48px;
